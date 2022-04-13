@@ -4,8 +4,8 @@ using namespace std;
 struct Node
 {
     int data;
-    Node *next = NULL;
-    Node *prev = NULL;
+    Node* next = NULL;
+    Node* prev = NULL;
 };
 
 struct List
@@ -14,7 +14,7 @@ struct List
     Node* end = NULL;
 };
 
-List Add_Node (List list, float x)
+List Add_Node(List list, float x)
 {
     Node* c = new Node;
     c->next = NULL;
@@ -26,60 +26,90 @@ List Add_Node (List list, float x)
         list.end = c;
     }
     else {
-        list.end->next= c;
+        list.end->next = c;
         list.end = c;
     }
     return list;
-    
+
 }
 
-List Delete (List list)
+void Delete(List* list)
 {
-    Node* current = list.head;
+    Node* current = list->head;
     Node* previous = NULL;
     Node* next = NULL;
-    
+
     while (current != NULL)
     {
-            if (current != list.head)
+        if (current != list->head)
+        {
+            if (current->data > 10 && current->data < 20)
             {
-                    if ( current->data > 10 && current->data < 20)
-                    {
-                        if (previous->prev != NULL)
-                        {
-                            previous->prev->next = current;
-                            current->prev = previous->prev;
-                            next = current->prev;
-                            delete previous;
-                        }
-                        else {
-                            list.head = current;
-                            delete current->prev;
-                        }
-                    }
-                current = current->next;
-                previous = previous->next;
-                
+                if (previous->prev != NULL)
+                {
+                    previous->prev->next = current;
+                    current->prev = previous->prev;
+                    next = current->prev;
+                    delete previous;
+                }
+                else {
+                    list->head = current;
+                    delete current->prev;
+                }
+            }
+            current = current->next;
+            previous = previous->next;
+
+        }
+        else
+        {
+            current = current->next;
+            if (current != NULL) {
+                previous = list->head;
+                current->prev = previous;
+            }
+        }
+        if (current == NULL)
+            return;
+        if (current->prev != next || current->prev == NULL)
+            current->prev = previous;
+    }
+}
+
+
+void Delete2(List* list)
+{
+    Node* current = list->head;
+    Node* toDelete = NULL;
+
+    while (!(current == NULL || current->next == NULL))
+    {
+        if (current->next->data > 10 && current->next->data < 20)
+        {
+            if (current->prev != NULL)
+            {
+                current->prev->next = current->next;
             }
             else
             {
-                current = current->next;
-                if ( current != NULL){
-                    previous = list.head;
-                    current->prev = previous;
-                }
+                list->head = current->next;
             }
-        if ( current == NULL)
-            return list;
-        if (current->prev != next || current->prev == NULL)
-        current->prev = previous;
+
+            current->next->prev = current->prev;
+
+            Node* toDelete = current;
+        }
+        
+        current = current->next;
+        delete toDelete;
+        toDelete = NULL;
     }
-    return list;
 }
-void Print_List (List list)
+
+void Print_List(List list)
 {
-    Node *c = list.head;
-    while (c != NULL){
+    Node* c = list.head;
+    while (c != NULL) {
         cout << c->data << " ";
         c = c->next;
     }
@@ -87,15 +117,15 @@ void Print_List (List list)
 
 int main()
 {
-    float x;
+    float x = 0;
     List node;
-    while ( x != 999){
+    while (x != 999) {
         cout << "Enter a number: ";
         cin >> x;
         node = Add_Node(node, x);
     }
-    node = Delete (node);
-    Print_List (node);
-    
+    Delete2(&node);
+    Print_List(node);
+
     return 0;
 }
