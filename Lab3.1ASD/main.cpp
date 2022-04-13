@@ -97,7 +97,7 @@ void Delete2(List* list)
 
             current->next->prev = current->prev;
 
-            Node* toDelete = current;
+            toDelete = current;
         }
         
         current = current->next;
